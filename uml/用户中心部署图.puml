@@ -1,0 +1,9 @@
+@startuml
+
+package "UserCenter" {
+HTTP - [API Server]
+[DB]
+[EventBus]
+}
+
+@enduml

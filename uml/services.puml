@@ -1,0 +1,14 @@
+@startuml
+
+package "UserCenter" {
+HTTP - [API]
+[DataBase]
+}
+
+package "OrgServer" {
+Rest - [OrgAPI]
+[ReadDB] --> SQL
+[聚合查询]
+}
+
+@enduml

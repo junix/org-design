@@ -1,0 +1,9 @@
+@startuml
+
+class 用户 {
+Object[] elementData
+size()
+}
+
+
+@enduml
