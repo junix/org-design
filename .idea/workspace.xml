@@ -21,16 +21,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="services.puml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/uml/services.puml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="200">
-              <caret line="10" column="5" selection-start-line="10" selection-start-column="5" selection-end-line="10" selection-end-column="5" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="UserEmplee.puml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/uml/UserEmplee.puml">
           <provider selected="true" editor-type-id="text-editor">
@@ -139,8 +129,24 @@
         <entry file="file://$PROJECT_DIR$/doc/组织架构.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
             <state split_layout="FIRST">
-              <first_editor relative-caret-position="640">
-                <caret line="48" column="8" selection-start-line="48" selection-start-column="8" selection-end-line="48" selection-end-column="8" />
+              <first_editor relative-caret-position="700">
+                <caret line="107" column="0" selection-start-line="107" selection-start-column="0" selection-end-line="107" selection-end-column="0" />
+                <folding />
+              </first_editor>
+              <second_editor />
+            </state>
+          </provider>
+          <provider editor-type-id="MarkdownFxPreviewEditor">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="用户中心.md" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/doc/用户中心.md">
+          <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+            <state split_layout="FIRST">
+              <first_editor relative-caret-position="220">
+                <caret line="11" column="4" selection-start-line="11" selection-start-column="4" selection-end-line="11" selection-end-column="4" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -175,6 +181,7 @@
         <option value="$PROJECT_DIR$/doc/组织架构和用户中心的关系.md" />
         <option value="$PROJECT_DIR$/ReadMe.md" />
         <option value="$PROJECT_DIR$/doc/组织架构.md" />
+        <option value="$PROJECT_DIR$/doc/用户中心.md" />
       </list>
     </option>
   </component>
@@ -425,7 +432,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="47" y="23" width="1393" height="877" extended-state="6" />
+    <frame x="47" y="23" width="1393" height="877" extended-state="1" />
     <editor active="true" />
     <layout>
       <window_info id="PlantUML" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.44699776" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -637,11 +644,25 @@
         <state />
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/doc/用户中心.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="FIRST">
+          <first_editor relative-caret-position="220">
+            <caret line="11" column="4" selection-start-line="11" selection-start-column="4" selection-end-line="11" selection-end-column="4" />
+            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+      <provider editor-type-id="MarkdownFxPreviewEditor">
+        <state />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/doc/组织架构.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="FIRST">
-          <first_editor relative-caret-position="640">
-            <caret line="48" column="8" selection-start-line="48" selection-start-column="8" selection-end-line="48" selection-end-column="8" />
+          <first_editor relative-caret-position="700">
+            <caret line="107" column="0" selection-start-line="107" selection-start-column="0" selection-end-line="107" selection-end-column="0" />
             <folding />
           </first_editor>
           <second_editor />
