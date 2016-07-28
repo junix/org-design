@@ -1,0 +1,31 @@
+@startuml
+
+node RestServer01 {
+    component HttpServer01
+    component DomainLogic01
+    component ORM01
+    component ServiceDiscovery01
+}
+
+node RestServer02 {
+    component HttpServer02
+    component DomainLogic02
+    component ORM02
+    component ServiceDiscovery02
+}
+
+node RestServer03 {
+    component EventBus
+}
+
+database D01 {
+    storage user_table
+}
+
+database D02 {
+}
+
+RestServer01 -0- D01
+RestServer02 -0- D02
+
+@enduml
