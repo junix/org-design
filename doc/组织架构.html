@@ -1,0 +1,3073 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<style>
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote {
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;
+    font-size: 13px;
+    line-height: 18px;
+    color: #737373;
+    background-color: white;
+    margin: 10px 13px 10px 13px;
+}
+table {
+	margin: 10px 0 15px 0;
+	border-collapse: collapse;
+}
+td,th {	
+	border: 1px solid #ddd;
+	padding: 3px 10px;
+}
+th {
+	padding: 5px 10px;	
+}
+
+a {
+    color: #0069d6;
+}
+a:hover {
+    color: #0050a3;
+    text-decoration: none;
+}
+a img {
+    border: none;
+}
+p {
+    margin-bottom: 9px;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #404040;
+    line-height: 36px;
+}
+h1 {
+    margin-bottom: 18px;
+    font-size: 30px;
+}
+h2 {
+    font-size: 24px;
+}
+h3 {
+    font-size: 18px;
+}
+h4 {
+    font-size: 16px;
+}
+h5 {
+    font-size: 14px;
+}
+h6 {
+    font-size: 13px;
+}
+hr {
+    margin: 0 0 19px;
+    border: 0;
+    border-bottom: 1px solid #ccc;
+}
+blockquote {
+    padding: 13px 13px 21px 15px;
+    margin-bottom: 18px;
+    font-family:georgia,serif;
+    font-style: italic;
+}
+blockquote:before {
+    content:"\201C";
+    font-size:40px;
+    margin-left:-10px;
+    font-family:georgia,serif;
+    color:#eee;
+}
+blockquote p {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 18px;
+    margin-bottom: 0;
+    font-style: italic;
+}
+code, pre {
+    font-family: Monaco, Andale Mono, Courier New, monospace;
+}
+code {
+    background-color: #fee9cc;
+    color: rgba(0, 0, 0, 0.75);
+    padding: 1px 3px;
+    font-size: 12px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+pre {
+    display: block;
+    padding: 14px;
+    margin: 0 0 18px;
+    line-height: 16px;
+    font-size: 11px;
+    border: 1px solid #d9d9d9;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+pre code {
+    background-color: #fff;
+    color:#737373;
+    font-size: 11px;
+    padding: 0;
+}
+sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+* {
+	-webkit-print-color-adjust: exact;
+}
+@media screen and (min-width: 914px) {
+    body {
+        width: 854px;
+        margin:10px auto;
+    }
+}
+@media print {
+	body,code,pre code,h1,h2,h3,h4,h5,h6 {
+		color: black;
+	}
+	table, pre {
+		page-break-inside: avoid;
+	}
+}
+</style>
+<title>组织架构</title>
+
+</head>
+<body>
+<h1>组织架构</h1>
+
+<hr />
+
+<h2>功能描述</h2>
+
+<ul>
+<li>提供组织机构的查询和修改</li>
+<li>组织架构变化支持订阅和发布</li>
+</ul>
+
+
+<h2>性能和扩展性要求</h2>
+
+<ul>
+<li>读写都复杂</li>
+<li>能够扩展</li>
+<li>读的频率更多</li>
+</ul>
+
+
+<h2>领域模型（待完成）</h2>
+
+<ul>
+<li><p>Org</p>
+
+<ul>
+<li>id</li>
+<li>name</li>
+<li>departments</li>
+<li>members</li>
+</ul>
+</li>
+<li><p>Department</p></li>
+<li>SubOrg</li>
+<li>Employee</li>
+</ul>
+
+
+<p>以<code>Org</code>作为聚合根</p>
+
+<h2>API（待完成）</h2>
+
+<h2>参考CQRS / EventSourcing 架构模式</h2>
+
+<p><code>CQRS</code>的介绍网上有许多，这里采用微软MSDN上的文档：
+链接如下：</p>
+
+<p><a href="https://msdn.microsoft.com/en-us/library/dn568103.aspx">Command and Query Responsibility Segregation (CQRS) Pattern</a></p>
+
+<p>CQRS有好几种变种，例如这份文档就给出两种：</p>
+
+<p><code>Figure 2</code> 这种读写模式共享数据库。在代码层面，将读和写的逻辑剥离，好处是能够降低业务处理的复杂度。</p>
+
+<p><code>Figure 3</code> 这种模式是分离了读库和写库，这种模式，<code>读库</code>（<code>WriteDB</code>）和<code>写库</code>(<code>ReadDB</code>)分开部署，可以部署不通的数据（<code>NoSQL</code>+<code>RDBMS</code>可以混合部署），扩展性好。读和写的差异更大。</p>
+
+<p><img src="/opt/mos/codebase/org-design/doc/cqrs3.png" height="350" width="700" alt="" />
+<img src="/opt/mos/codebase/org-design/doc/cqrs1.png" height="300" width="700" alt="" /></p>
+
+<p>后一种模式，完整的CQRS架构如下。在JVM平台上，大部分组件都是现成的，并且使用比较广泛。
+<img src="/opt/mos/codebase/org-design/doc/cqrs2.png" height="400" width="700" alt="" /></p>
+
+<h2>并发，Actor模型和AKKA</h2>
+
+<p>并发处理方面，有个比较成熟的<code>Actor模型</code>（JVM平台上）， <code>akka</code>。</p>
+
+<p>这个<code>akka</code>对于我们来说有几个优势：</p>
+
+<ul>
+<li>很好的并发。<code>akka</code>官网宣布的性能是</li>
+</ul>
+
+
+<pre><code>50 million msg/sec on a single machine. Small memory footprint; ~2.5 million actors per GB of heap.
+</code></pre>
+
+<ul>
+<li><code>Actor</code>也是比较熟悉的模型（不过以前是<code>Erlang</code>的Actor模型）</li>
+<li>akka有个组件，叫做 <code>persistence</code>,这种方式实现EventSourcing和CQRS比较自然。</li>
+</ul>
+
+
+<h2>性能模型</h2>
+
+<h3>写入性能分析</h3>
+
+<p>总得代价为校验加上事件发布的代价。</p>
+
+<ul>
+<li>校验</li>
+<li>事件（日志-leveldb\cassandra(LSM)）
+
+<ul>
+<li><code>DepartmentDisabled</code></li>
+<li><code>DepartmentMoved</code></li>
+<li><code>EmpleeJoined</code></li>
+<li>..</li>
+</ul>
+</li>
+</ul>
+
+
+<h3>读取性能评估</h3>
+
+<h3>数据量</h3>
+
+<h4>子部门数据量查询表</h4>
+
+<p>第一列是平均每个部门的<code>子部门数</code>，其他列为对应的<code>部门层级</code>时的全公司的<code>总部门数目</code>。</p>
+
+<table>
+<thead>
+<tr>
+<th align="center"> sub deps </th>
+<th align="center"> level 1 </th>
+<th align="center"> level 2 </th>
+<th align="center"> level 3 </th>
+<th align="center"> level 4   </th>
+<th align="center"> level 5     </th>
+<th align="center"> level 6       </th>
+<th align="center"> level 7         </th>
+<th align="center"> level 8           </th>
+<th align="center"> level 9             </th>
+<th align="center"> level 10              </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"> 2        </td>
+<td align="center"> <code>3</code>     </td>
+<td align="center"> <code>7</code>     </td>
+<td align="center"> <code>15</code>    </td>
+<td align="center"> <code>31</code>      </td>
+<td align="center"> <code>63</code>        </td>
+<td align="center"> <code>127</code>         </td>
+<td align="center"> <code>255</code>           </td>
+<td align="center"> <code>511</code>             </td>
+<td align="center"> <code>1023</code>              </td>
+<td align="center"> <code>2047</code>                </td>
+</tr>
+<tr>
+<td align="center"> 3        </td>
+<td align="center"> <code>4</code>     </td>
+<td align="center"> <code>13</code>    </td>
+<td align="center"> <code>40</code>    </td>
+<td align="center"> <code>121</code>     </td>
+<td align="center"> <code>364</code>       </td>
+<td align="center"> <code>1093</code>        </td>
+<td align="center"> <code>3280</code>          </td>
+<td align="center"> <code>9841</code>            </td>
+<td align="center"> <code>29524</code>             </td>
+<td align="center"> <code>88573</code>               </td>
+</tr>
+<tr>
+<td align="center"> 4        </td>
+<td align="center"> <code>5</code>     </td>
+<td align="center"> <code>21</code>    </td>
+<td align="center"> <code>85</code>    </td>
+<td align="center"> <code>341</code>     </td>
+<td align="center"> <code>1365</code>      </td>
+<td align="center"> <code>5461</code>        </td>
+<td align="center"> <code>21845</code>         </td>
+<td align="center"> <code>87381</code>           </td>
+<td align="center"> 349525              </td>
+<td align="center"> 1398101               </td>
+</tr>
+<tr>
+<td align="center"> 5        </td>
+<td align="center"> <code>6</code>     </td>
+<td align="center"> <code>31</code>    </td>
+<td align="center"> <code>156</code>   </td>
+<td align="center"> <code>781</code>     </td>
+<td align="center"> <code>3906</code>      </td>
+<td align="center"> <code>19531</code>       </td>
+<td align="center"> <code>97656</code>         </td>
+<td align="center"> 488281            </td>
+<td align="center"> 2441406             </td>
+<td align="center"> 12207031              </td>
+</tr>
+<tr>
+<td align="center"> 6        </td>
+<td align="center"> <code>7</code>     </td>
+<td align="center"> <code>43</code>    </td>
+<td align="center"> <code>259</code>   </td>
+<td align="center"> <code>1555</code>    </td>
+<td align="center"> <code>9331</code>      </td>
+<td align="center"> <code>55987</code>       </td>
+<td align="center"> 335923          </td>
+<td align="center"> 2015539           </td>
+<td align="center"> 12093235            </td>
+<td align="center"> 72559411              </td>
+</tr>
+<tr>
+<td align="center"> 7        </td>
+<td align="center"> <code>8</code>     </td>
+<td align="center"> <code>57</code>    </td>
+<td align="center"> <code>400</code>   </td>
+<td align="center"> <code>2801</code>    </td>
+<td align="center"> <code>19608</code>     </td>
+<td align="center"> 137257        </td>
+<td align="center"> 960800          </td>
+<td align="center"> 6725601           </td>
+<td align="center"> 47079208            </td>
+<td align="center"> 329554457             </td>
+</tr>
+<tr>
+<td align="center"> 8        </td>
+<td align="center"> <code>9</code>     </td>
+<td align="center"> <code>73</code>    </td>
+<td align="center"> <code>585</code>   </td>
+<td align="center"> <code>4681</code>    </td>
+<td align="center"> <code>37449</code>     </td>
+<td align="center"> 299593        </td>
+<td align="center"> 2396745         </td>
+<td align="center"> 19173961          </td>
+<td align="center"> 153391689           </td>
+<td align="center"> 1227133513            </td>
+</tr>
+<tr>
+<td align="center"> 9        </td>
+<td align="center"> <code>10</code>    </td>
+<td align="center"> <code>91</code>    </td>
+<td align="center"> <code>820</code>   </td>
+<td align="center"> <code>7381</code>    </td>
+<td align="center"> <code>66430</code>     </td>
+<td align="center"> 597871        </td>
+<td align="center"> 5380840         </td>
+<td align="center"> 48427561          </td>
+<td align="center"> 435848050           </td>
+<td align="center"> 3922632451            </td>
+</tr>
+<tr>
+<td align="center"> 10       </td>
+<td align="center"> <code>11</code>    </td>
+<td align="center"> <code>111</code>   </td>
+<td align="center"> <code>1111</code>  </td>
+<td align="center"> <code>11111</code>   </td>
+<td align="center"> 111111      </td>
+<td align="center"> 1111111       </td>
+<td align="center"> 11111111        </td>
+<td align="center"> 111111111         </td>
+<td align="center"> 1111111111          </td>
+<td align="center"> 11111111111           </td>
+</tr>
+<tr>
+<td align="center"> 15       </td>
+<td align="center"> <code>16</code>    </td>
+<td align="center"> <code>241</code>   </td>
+<td align="center"> <code>3616</code>  </td>
+<td align="center"> <code>54241</code>   </td>
+<td align="center"> 813616      </td>
+<td align="center"> 12204241      </td>
+<td align="center"> 183063616       </td>
+<td align="center"> 2745954241        </td>
+<td align="center"> 41189313616         </td>
+<td align="center"> 617839704241          </td>
+</tr>
+<tr>
+<td align="center"> 20       </td>
+<td align="center"> <code>21</code>    </td>
+<td align="center"> <code>421</code>   </td>
+<td align="center"> <code>8421</code>  </td>
+<td align="center"> 168421    </td>
+<td align="center"> 3368421     </td>
+<td align="center"> 67368421      </td>
+<td align="center"> 1347368421      </td>
+<td align="center"> 26947368421       </td>
+<td align="center"> 538947368421        </td>
+<td align="center"> 10778947368421        </td>
+</tr>
+<tr>
+<td align="center"> 50       </td>
+<td align="center"> <code>51</code>    </td>
+<td align="center"> <code>2551</code>  </td>
+<td align="center"> 127551  </td>
+<td align="center"> 6377551   </td>
+<td align="center"> 318877551   </td>
+<td align="center"> 15943877551   </td>
+<td align="center"> 797193877551    </td>
+<td align="center"> 39859693877551    </td>
+<td align="center"> 1992984693877551    </td>
+<td align="center"> 99649234693877551     </td>
+</tr>
+<tr>
+<td align="center"> 100      </td>
+<td align="center"> <code>101</code>   </td>
+<td align="center"> <code>10101</code> </td>
+<td align="center"> 1010101 </td>
+<td align="center"> 101010101 </td>
+<td align="center"> 10101010101 </td>
+<td align="center"> 1010101010101 </td>
+<td align="center"> 101010101010101 </td>
+<td align="center"> 10101010101010101 </td>
+<td align="center"> 1010101010101010101 </td>
+<td align="center"> 101010101010101010101 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h4>组织架构的修改</h4>
+
+<table>
+<thead>
+<tr>
+<th align="center"> 操作     </th>
+<th align="center"> 频率 </th>
+<th align="center"> 难度  </th>
+<th align="center"> 难点               </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"> 创建组织 </td>
+<td align="center"> 中   </td>
+<td align="center"> ★★    </td>
+<td align="center">                    </td>
+</tr>
+<tr>
+<td align="center"> 创建部门 </td>
+<td align="center"> 高   </td>
+<td align="center"> ★     </td>
+<td align="center">                    </td>
+</tr>
+<tr>
+<td align="center"> 新增员工 </td>
+<td align="center"> 高   </td>
+<td align="center"> ★     </td>
+<td align="center">                    </td>
+</tr>
+<tr>
+<td align="center"> 删除员工 </td>
+<td align="center"> 低   </td>
+<td align="center"> ★     </td>
+<td align="center">                    </td>
+</tr>
+<tr>
+<td align="center"> 删除部门 </td>
+<td align="center"> 低   </td>
+<td align="center"> ★★★   </td>
+<td align="center"> 中间数据的正确维护 </td>
+</tr>
+<tr>
+<td align="center"> 移动部门 </td>
+<td align="center"> 中   </td>
+<td align="center"> ★★★★★ </td>
+<td align="center"> 中间数据的正确维护 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h4>组织架构的查询</h4>
+
+<table>
+<thead>
+<tr>
+<th align="center"> 查询                     </th>
+<th align="center"> 频率 </th>
+<th align="center"> 难度  </th>
+<th align="center"> 难点 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"> 单个部门信息             </td>
+<td align="center"> 高   </td>
+<td align="center"> ★     </td>
+<td align="center">      </td>
+</tr>
+<tr>
+<td align="center"> 单个员工信息             </td>
+<td align="center"> 高   </td>
+<td align="center"> ★     </td>
+<td align="center">      </td>
+</tr>
+<tr>
+<td align="center"> 单个部门员工集合         </td>
+<td align="center"> 高   </td>
+<td align="center"> ★     </td>
+<td align="center">      </td>
+</tr>
+<tr>
+<td align="center"> 查询一个员工直属的子公司 </td>
+<td align="center"> 高   </td>
+<td align="center"> ★★    </td>
+<td align="center">      </td>
+</tr>
+<tr>
+<td align="center"> 满足特定条件的岗位员工   </td>
+<td align="center"> 低   </td>
+<td align="center"> ★★★   </td>
+<td align="center">      </td>
+</tr>
+<tr>
+<td align="center"> 父部门                   </td>
+<td align="center"> 中   </td>
+<td align="center"> ★     </td>
+<td align="center">      </td>
+</tr>
+<tr>
+<td align="center"> 祖先部门                 </td>
+<td align="center"> 中   </td>
+<td align="center"> ★★★   </td>
+<td align="center">      </td>
+</tr>
+<tr>
+<td align="center"> 直属子部门               </td>
+<td align="center"> 中   </td>
+<td align="center"> ★     </td>
+<td align="center">      </td>
+</tr>
+<tr>
+<td align="center"> 所有子部门               </td>
+<td align="center"> 高   </td>
+<td align="center"> ★★★★  </td>
+<td align="center"> 效率 </td>
+</tr>
+<tr>
+<td align="center"> 所有子部门员工           </td>
+<td align="center"> 中   </td>
+<td align="center"> ★★★★★ </td>
+<td align="center"> 效率 </td>
+</tr>
+<tr>
+<td align="center"> 数据的全量导出           </td>
+<td align="center"> 低   </td>
+<td align="center"> ★★★★★ </td>
+<td align="center"> 效率 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h4>注意事项</h4>
+
+<ul>
+<li>高频API的调用考虑到效率，不宜与数据库交互次数太多（多次查询）。</li>
+</ul>
+
+
+<h4>单<code>记录</code>内存信息占用评估</h4>
+
+<hr />
+
+<table>
+<thead>
+<tr>
+<th align="center"> Entity   </th>
+<th align="center"> 数目 </th>
+<th align="center"> 单位内存占用 </th>
+<th align="center"> 主要占用 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"> 组织     </td>
+<td align="center"> 少   </td>
+<td align="center"> 2K           </td>
+<td align="center"> 字段多   </td>
+</tr>
+<tr>
+<td align="center"> 部门     </td>
+<td align="center"> 中   </td>
+<td align="center"> 2K           </td>
+<td align="center"> 字段多   </td>
+</tr>
+<tr>
+<td align="center"> 员工     </td>
+<td align="center"> 多   </td>
+<td align="center"> 1K           </td>
+<td align="center"> 字段多   </td>
+</tr>
+<tr>
+<td align="center"> 岗位     </td>
+<td align="center"> 少   </td>
+<td align="center"> 1K           </td>
+<td align="center">          </td>
+</tr>
+<tr>
+<td align="center"> 隶属关系 </td>
+<td align="center"> 多   </td>
+<td align="center"> 128字节      </td>
+<td align="center"> ID占用   </td>
+</tr>
+</tbody>
+</table>
+
+
+<h4>查询优化设计</h4>
+
+<hr />
+
+<h5>用<code>关系模型</code>表示<code>树模型</code></h5>
+
+<p>整改组织的架构可以用树状结构来表示。</p>
+
+<pre><code>矩阵结构原则上也可以用同一个组织下两棵对等的组织树来表示。
+</code></pre>
+
+<h6>ID/PID设计</h6>
+
+<p>最常用的方式是<code>id/pid</code>的设计方式。这种方式对所有RDBMS都适用。我们以前也是采用这种方式：<code>组织结构人员关系</code>表(即<code>Core_OrgOUEmployeeMap</code>)这张表，就是这种方式。</p>
+
+<p>新的组织关系表(<code>org_tree</code>)设计如下：</p>
+
+<table>
+<thead>
+<tr>
+<th align="center"> 字段        </th>
+<th align="center"> 类型   </th>
+<th align="center"> 意义                                </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"> node_id     </td>
+<td align="center"> 字符串 </td>
+<td align="center"> 节点的ID                            </td>
+</tr>
+<tr>
+<td align="center"> node_type   </td>
+<td align="center"> Enum   </td>
+<td align="center"> 节点类型:部门，子公司，项目组，员工 </td>
+</tr>
+<tr>
+<td align="center"> parent_id   </td>
+<td align="center"> 字符串 </td>
+<td align="center"> 父亲节点的类型                      </td>
+</tr>
+<tr>
+<td align="center"> parent_type </td>
+<td align="center"> Enum   </td>
+<td align="center"> 节点类型:子公司，项目组，部门       </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>注意:</p>
+
+<ul>
+<li><code>顶级部门</code>的<code>parent_id</code>为其自己的ID，不采用<code>NULL</code>,确保表里的字段都满足外键约束。</li>
+<li>这里的隶属关系不再像原来的表，只能表示<strong><code>人员</code>与<code>部门</code>的隶属关系</strong>，这里的表能够表示:
+<strong>所有<code>实体</code>之间的<code>隶属</code>关系</strong>,
+例如：人员隶属某个部门，部门隶属某个子公司等等都在这张表里。</li>
+</ul>
+
+
+<p>与原来的表结构做了如下改动：</p>
+
+<ul>
+<li>删除了<code>IsPartTime</code>(<code>是否兼职</code>)这个字段。原因，我们新的组织架构需要支持在多个部门的场景，所以这个可以拿掉。</li>
+<li><code>IsManager</code>(<code>是否是主管</code>)字段暂时不添加进来，移动的其他的表。主要考虑是尽量减少字段数目，减少表大小。原来的字段类型为<code>BIT</code>,在MySQL等数据库中，还是<a href="http://dev.mysql.com/doc/refman/5.7/en/storage-requirements.html"><code>1字节</code></a>(BIT(M)大约占用(M+7)/8字节),Oracle里可能比较高效。</li>
+</ul>
+
+
+<h6>其他已知的方式</h6>
+
+<p>调研发现，有企业使用json存储组织架构关系，放到支持json查询的数据库里（例如postgres）。没有仔细研究过，怎么使用的。暂时不做考虑。</p>
+
+<h5>查询加速</h5>
+
+<p>基于上述的表结构，再结合我们的查询操作，我们来考虑查询的效率问题。
+可以看出有部分查询不太高效，例如：</p>
+
+<ul>
+<li>查询一个部门的所有子(父)部门</li>
+<li>查询一个员工直属的子公司</li>
+</ul>
+
+
+<p>这些查询，使用<code>隶属表</code>（<code>org_tree</code>），则不太高效。例如：</p>
+
+<pre><code>查询一个部门的所有子孙部门的人员列表
+</code></pre>
+
+<p>为了完成这个查询，我们普通的方法是：</p>
+
+<pre><code>1. 递归的查询出当前部门的所有子孙部门
+2. 查出所有隶属与这些部门的员工
+</code></pre>
+
+<p>其中，<strong><em>步骤1</em></strong>涉及多次调用，每个部门平均5个子部门，共4层，则共需要<code>1+5+25=31</code>次查询。数据量不大，但是调用太多，总的操作时间会比较长。所以实际中不能采用这种方式。</p>
+
+<h6>解决方案</h6>
+
+<p>设计冗余的检索信息结构。保存在数据库或者内存里。在查询这类信息时，用这种结构做检索，再辅助隶属表。</p>
+
+<p>这个查询，可以分下面两个阶段的<code>查询计划</code></p>
+
+<pre><code>1. 从检索结构中查出相关的拓扑关系（例如，子部门ID）
+2. SQL查询（例如, select * from employee where department_id in (子部门id列表)）
+</code></pre>
+
+<p>如果这个检索设计在数据库里，则可以进一步简化为一个SQL查询（通过子查询）：</p>
+
+<pre><code>1. SQL查询（例如, select * from employee where department_id in (子部门id列表查询SQL)）
+</code></pre>
+
+<h3>部门拓扑关系高效查询的可能方式有</h3>
+
+<h4>内存建模</h4>
+
+<p>在内存中自己维护这个拓扑关系。这里需要注意内存的使用，<strong>防止使用过多的内存</strong>。</p>
+
+<p>可以有下面的一些措施减少内存占用：</p>
+
+<ul>
+<li><code>succinct</code>信息结构</li>
+<li>定期失效，移除内存</li>
+</ul>
+
+
+<h4><code>neo4j</code>等图数据存储拓扑关系</h4>
+
+<p>使用图数据库来维护这个关系。</p>
+
+<h4>数据库冗余</h4>
+
+<p>用RDBMS加速查询优化，主要参考:</p>
+
+<hr />
+
+<p><a href="http://fungus.teststation.com/~jon/treehandling/TreeHandling.htm">Representing Trees in a relational DB</a></p>
+
+<p>url: http://fungus.teststation.com/~jon/treehandling/TreeHandling.htm</p>
+
+<h6><code>path</code>表的数目</h6>
+
+<table>
+<thead>
+<tr>
+<th align="center"> sub deps </th>
+<th align="center"> level 1 </th>
+<th align="center"> level 2 </th>
+<th align="center"> level 3 </th>
+<th align="center"> level 4   </th>
+<th align="center"> level 5     </th>
+<th align="center"> level 6       </th>
+<th align="center"> level 7         </th>
+<th align="center"> level 8           </th>
+<th align="center"> level 9             </th>
+<th align="center"> level 10               </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"> <code>2</code>      </td>
+<td align="center"> <code>3</code>     </td>
+<td align="center"> <code>17</code>    </td>
+<td align="center"> <code>62</code>    </td>
+<td align="center"> <code>186</code>     </td>
+<td align="center"> <code>501</code>       </td>
+<td align="center"> <code>1263</code>        </td>
+<td align="center"> <code>3048</code>          </td>
+<td align="center"> <code>7136</code>            </td>
+<td align="center"> <code>16343</code>             </td>
+<td align="center"> <code>36813</code>                </td>
+</tr>
+<tr>
+<td align="center"> <code>3</code>      </td>
+<td align="center"> <code>4</code>     </td>
+<td align="center"> <code>30</code>    </td>
+<td align="center"> <code>150</code>   </td>
+<td align="center"> <code>634</code>     </td>
+<td align="center"> <code>2454</code>      </td>
+<td align="center"> <code>9012</code>        </td>
+<td align="center"> <code>31972</code>         </td>
+<td align="center"> <code>110700</code>          </td>
+<td align="center"> <code>376416</code>            </td>
+<td align="center"> <code>1262146</code>              </td>
+</tr>
+<tr>
+<td align="center"> <code>4</code>      </td>
+<td align="center"> <code>5</code>     </td>
+<td align="center"> <code>47</code>    </td>
+<td align="center"> <code>302</code>   </td>
+<td align="center"> <code>1666</code>    </td>
+<td align="center"> <code>8491</code>      </td>
+<td align="center"> <code>41257</code>       </td>
+<td align="center"> <code>194172</code>        </td>
+<td align="center"> <code>893220</code>          </td>
+<td align="center"> 4038945             </td>
+<td align="center"> 18019955               </td>
+</tr>
+<tr>
+<td align="center"> <code>5</code>      </td>
+<td align="center"> <code>6</code>     </td>
+<td align="center"> <code>68</code>    </td>
+<td align="center"> <code>536</code>   </td>
+<td align="center"> <code>3660</code>    </td>
+<td align="center"> <code>23190</code>     </td>
+<td align="center"> <code>140376</code>      </td>
+<td align="center"> <code>823968</code>        </td>
+<td align="center"> 4730216           </td>
+<td align="center"> 26702870            </td>
+<td align="center"> 148773180              </td>
+</tr>
+<tr>
+<td align="center"> <code>6</code>      </td>
+<td align="center"> <code>7</code>     </td>
+<td align="center"> <code>93</code>    </td>
+<td align="center"> <code>870</code>   </td>
+<td align="center"> <code>7090</code>    </td>
+<td align="center"> <code>53745</code>     </td>
+<td align="center"> <code>389667</code>      </td>
+<td align="center"> 2741128         </td>
+<td align="center"> 18865440          </td>
+<td align="center"> 127704555           </td>
+<td align="center"> 853298665              </td>
+</tr>
+<tr>
+<td align="center"> <code>7</code>      </td>
+<td align="center"> <code>8</code>     </td>
+<td align="center"> <code>122</code>   </td>
+<td align="center"> <code>1322</code>  </td>
+<td align="center"> <code>12526</code>   </td>
+<td align="center"> <code>110566</code>    </td>
+<td align="center"> 934108        </td>
+<td align="center"> 7659708         </td>
+<td align="center"> 61464516          </td>
+<td align="center"> 485177388           </td>
+<td align="center"> 3780721958             </td>
+</tr>
+<tr>
+<td align="center"> <code>8</code>      </td>
+<td align="center"> <code>9</code>     </td>
+<td align="center"> <code>155</code>   </td>
+<td align="center"> <code>1910</code>  </td>
+<td align="center"> <code>20634</code>   </td>
+<td align="center"> <code>207879</code>    </td>
+<td align="center"> 2005437       </td>
+<td align="center"> 18782652        </td>
+<td align="center"> 172174340         </td>
+<td align="center"> 1552699541          </td>
+<td align="center"> 13824034671            </td>
+</tr>
+<tr>
+<td align="center"> <code>9</code>      </td>
+<td align="center"> <code>10</code>    </td>
+<td align="center"> <code>192</code>   </td>
+<td align="center"> <code>2652</code>  </td>
+<td align="center"> <code>32176</code>   </td>
+<td align="center"> <code>364326</code>    </td>
+<td align="center"> 3951552       </td>
+<td align="center"> 41617432        </td>
+<td align="center"> 429037920         </td>
+<td align="center"> 4351670370          </td>
+<td align="center"> 43577994880            </td>
+</tr>
+<tr>
+<td align="center"> <code>10</code>     </td>
+<td align="center"> <code>11</code>    </td>
+<td align="center"> <code>233</code>   </td>
+<td align="center"> <code>3566</code>  </td>
+<td align="center"> <code>48010</code>   </td>
+<td align="center"> 603565      </td>
+<td align="center"> 7270231       </td>
+<td align="center"> 85048008        </td>
+<td align="center"> 973936896         </td>
+<td align="center"> 10973936895         </td>
+<td align="center"> 122085048005           </td>
+</tr>
+<tr>
+<td align="center"> <code>15</code>     </td>
+<td align="center"> <code>16</code>    </td>
+<td align="center"> <code>498</code>   </td>
+<td align="center"> <code>11346</code> </td>
+<td align="center"> <code>228310</code>  </td>
+<td align="center"> 4296390     </td>
+<td align="center"> 77521836      </td>
+<td align="center"> 1358967148      </td>
+<td align="center"> 23326601076       </td>
+<td align="center"> 394030423620        </td>
+<td align="center"> 6572427466030          </td>
+</tr>
+<tr>
+<td align="center"> <code>20</code>     </td>
+<td align="center"> <code>21</code>    </td>
+<td align="center"> <code>863</code>   </td>
+<td align="center"> <code>26126</code> </td>
+<td align="center"> 699810    </td>
+<td align="center"> 17541915    </td>
+<td align="center"> 421752441     </td>
+<td align="center"> 9853331388      </td>
+<td align="center"> 225432278756      </td>
+<td align="center"> 5075958594545       </td>
+<td align="center"> 112865432278755        </td>
+</tr>
+<tr>
+<td align="center"> <code>50</code>     </td>
+<td align="center"> <code>51</code>    </td>
+<td align="center"> <code>5153</code>  </td>
+<td align="center"> 387806  </td>
+<td align="center"> 25898010  </td>
+<td align="center"> 1620285765  </td>
+<td align="center"> 97283551071   </td>
+<td align="center"> 5677640693928   </td>
+<td align="center"> 324555191714336   </td>
+<td align="center"> 18261417436612295   </td>
+<td align="center"> 1014753764375387805    </td>
+</tr>
+<tr>
+<td align="center"> <code>100</code>    </td>
+<td align="center"> <code>101</code>   </td>
+<td align="center"> <code>20303</code> </td>
+<td align="center"> 3050606 </td>
+<td align="center"> 407091010 </td>
+<td align="center"> 50912141515 </td>
+<td align="center"> 6111518202121 </td>
+<td align="center"> 713182225272828 </td>
+<td align="center"> 81521263033353636 </td>
+<td align="center"> 9172430353942444545 </td>
+<td align="center"> 1019273440454952545555 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h6>移动部门<code>path</code>表移动的数目</h6>
+
+<table>
+<thead>
+<tr>
+<th align="center"> sub deps </th>
+<th align="center"> level 1 </th>
+<th align="center"> level 2 </th>
+<th align="center"> level 3 </th>
+<th align="center"> level 4 </th>
+<th align="center"> level 5   </th>
+<th align="center"> level 6     </th>
+<th align="center"> level 7       </th>
+<th align="center"> level 8         </th>
+<th align="center"> level 9           </th>
+<th align="center"> level 10            </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"> <code>2</code>      </td>
+<td align="center"> <code>1</code>     </td>
+<td align="center"> <code>3</code>     </td>
+<td align="center"> <code>7</code>     </td>
+<td align="center"> <code>15</code>    </td>
+<td align="center"> <code>31</code>      </td>
+<td align="center"> <code>63</code>        </td>
+<td align="center"> <code>127</code>         </td>
+<td align="center"> <code>255</code>           </td>
+<td align="center"> <code>511</code>             </td>
+<td align="center"> <code>1023</code>              </td>
+</tr>
+<tr>
+<td align="center"> <code>3</code>      </td>
+<td align="center"> <code>1</code>     </td>
+<td align="center"> <code>4</code>     </td>
+<td align="center"> <code>13</code>    </td>
+<td align="center"> <code>40</code>    </td>
+<td align="center"> <code>121</code>     </td>
+<td align="center"> <code>364</code>       </td>
+<td align="center"> <code>1093</code>        </td>
+<td align="center"> <code>3280</code>          </td>
+<td align="center"> <code>9841</code>            </td>
+<td align="center"> <code>29524</code>             </td>
+</tr>
+<tr>
+<td align="center"> <code>4</code>      </td>
+<td align="center"> <code>1</code>     </td>
+<td align="center"> <code>5</code>     </td>
+<td align="center"> <code>21</code>    </td>
+<td align="center"> <code>85</code>    </td>
+<td align="center"> <code>341</code>     </td>
+<td align="center"> <code>1365</code>      </td>
+<td align="center"> <code>5461</code>        </td>
+<td align="center"> <code>21845</code>         </td>
+<td align="center"> 87381             </td>
+<td align="center"> 349525              </td>
+</tr>
+<tr>
+<td align="center"> <code>5</code>      </td>
+<td align="center"> <code>1</code>     </td>
+<td align="center"> <code>6</code>     </td>
+<td align="center"> <code>31</code>    </td>
+<td align="center"> <code>156</code>   </td>
+<td align="center"> <code>781</code>     </td>
+<td align="center"> <code>3906</code>      </td>
+<td align="center"> <code>19531</code>       </td>
+<td align="center"> 97656           </td>
+<td align="center"> 488281            </td>
+<td align="center"> 2441406             </td>
+</tr>
+<tr>
+<td align="center"> <code>6</code>      </td>
+<td align="center"> <code>1</code>     </td>
+<td align="center"> <code>7</code>     </td>
+<td align="center"> <code>43</code>    </td>
+<td align="center"> <code>259</code>   </td>
+<td align="center"> <code>1555</code>    </td>
+<td align="center"> <code>9331</code>      </td>
+<td align="center"> 55987         </td>
+<td align="center"> 335923          </td>
+<td align="center"> 2015539           </td>
+<td align="center"> 12093235            </td>
+</tr>
+<tr>
+<td align="center"> <code>7</code>      </td>
+<td align="center"> <code>1</code>     </td>
+<td align="center"> <code>8</code>     </td>
+<td align="center"> <code>57</code>    </td>
+<td align="center"> <code>400</code>   </td>
+<td align="center"> <code>2801</code>    </td>
+<td align="center"> 19608       </td>
+<td align="center"> 137257        </td>
+<td align="center"> 960800          </td>
+<td align="center"> 6725601           </td>
+<td align="center"> 47079208            </td>
+</tr>
+<tr>
+<td align="center"> <code>8</code>      </td>
+<td align="center"> <code>1</code>     </td>
+<td align="center"> <code>9</code>     </td>
+<td align="center"> <code>73</code>    </td>
+<td align="center"> <code>585</code>   </td>
+<td align="center"> <code>4681</code>    </td>
+<td align="center"> 37449       </td>
+<td align="center"> 299593        </td>
+<td align="center"> 2396745         </td>
+<td align="center"> 19173961          </td>
+<td align="center"> 153391689           </td>
+</tr>
+<tr>
+<td align="center"> <code>9</code>      </td>
+<td align="center"> <code>1</code>     </td>
+<td align="center"> <code>10</code>    </td>
+<td align="center"> <code>91</code>    </td>
+<td align="center"> <code>820</code>   </td>
+<td align="center"> <code>7381</code>    </td>
+<td align="center"> 66430       </td>
+<td align="center"> 597871        </td>
+<td align="center"> 5380840         </td>
+<td align="center"> 48427561          </td>
+<td align="center"> 435848050           </td>
+</tr>
+<tr>
+<td align="center"> <code>10</code>     </td>
+<td align="center"> <code>1</code>     </td>
+<td align="center"> <code>11</code>    </td>
+<td align="center"> <code>111</code>   </td>
+<td align="center"> <code>1111</code>  </td>
+<td align="center"> 11111     </td>
+<td align="center"> 111111      </td>
+<td align="center"> 1111111       </td>
+<td align="center"> 11111111        </td>
+<td align="center"> 111111111         </td>
+<td align="center"> 1111111111          </td>
+</tr>
+<tr>
+<td align="center"> <code>15</code>     </td>
+<td align="center"> <code>1</code>     </td>
+<td align="center"> <code>16</code>    </td>
+<td align="center"> <code>241</code>   </td>
+<td align="center"> <code>3616</code>  </td>
+<td align="center"> 54241     </td>
+<td align="center"> 813616      </td>
+<td align="center"> 12204241      </td>
+<td align="center"> 183063616       </td>
+<td align="center"> 2745954241        </td>
+<td align="center"> 41189313616         </td>
+</tr>
+<tr>
+<td align="center"> <code>20</code>     </td>
+<td align="center"> <code>1</code>     </td>
+<td align="center"> <code>21</code>    </td>
+<td align="center"> <code>421</code>   </td>
+<td align="center"> 8421    </td>
+<td align="center"> 168421    </td>
+<td align="center"> 3368421     </td>
+<td align="center"> 67368421      </td>
+<td align="center"> 1347368421      </td>
+<td align="center"> 26947368421       </td>
+<td align="center"> 538947368421        </td>
+</tr>
+<tr>
+<td align="center"> <code>50</code>     </td>
+<td align="center"> <code>1</code>     </td>
+<td align="center"> <code>51</code>    </td>
+<td align="center"> 2551    </td>
+<td align="center"> 127551  </td>
+<td align="center"> 6377551   </td>
+<td align="center"> 318877551   </td>
+<td align="center"> 15943877551   </td>
+<td align="center"> 797193877551    </td>
+<td align="center"> 39859693877551    </td>
+<td align="center"> 1992984693877551    </td>
+</tr>
+<tr>
+<td align="center"> <code>100</code>    </td>
+<td align="center"> <code>1</code>     </td>
+<td align="center"> <code>101</code>   </td>
+<td align="center"> 10101   </td>
+<td align="center"> 1010101 </td>
+<td align="center"> 101010101 </td>
+<td align="center"> 10101010101 </td>
+<td align="center"> 1010101010101 </td>
+<td align="center"> 101010101010101 </td>
+<td align="center"> 10101010101010101 </td>
+<td align="center"> 1010101010101010101 </td>
+</tr>
+</tbody>
+</table>
+
+
+<hr />
+
+<p><a href="http://c2.com/cgi/wiki?TreeInSql">Tree In Sql</a></p>
+
+<p>url: http://c2.com/cgi/wiki?TreeInSql</p>
+
+<h1>数据切分</h1>
+
+<p>以公司做水平划分。需要避免跨公司查询。</p>
+
+<h2>读表结构</h2>
+
+<hr />
+
+<p>member</p>
+
+<table>
+<thead>
+<tr>
+<th align="center"> Attribute/Logical Rolename </th>
+<th align="center"> Domain     </th>
+<th align="center"> Datatype      </th>
+<th align="center"> NULL </th>
+<th align="center"> Definition                                                          </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"> ID(PK)                     </td>
+<td align="center"> 主键ID     </td>
+<td align="center"> CHAR(36)      </td>
+<td align="center"> NO   </td>
+<td align="center"> 用户登录用户名，与Membership一对一关系                              </td>
+</tr>
+<tr>
+<td align="center"> OrgID                      </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)      </td>
+<td align="center"> YES  </td>
+<td align="center"> 机构ID                                                              </td>
+</tr>
+<tr>
+<td align="center"> UserName                   </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> NO   </td>
+<td align="center"> 用户名                                                              </td>
+</tr>
+<tr>
+<td align="center"> CnName                     </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> NO   </td>
+<td align="center"> 用户中文名称                                                        </td>
+</tr>
+<tr>
+<td align="center"> HeadPictureURL             </td>
+<td align="center"> 页面路径   </td>
+<td align="center"> NVARCHAR(500) </td>
+<td align="center"> YES  </td>
+<td align="center"> 用户头像，引用表图库表                                              </td>
+</tr>
+<tr>
+<td align="center"> Email                      </td>
+<td align="center"> 页面路径   </td>
+<td align="center"> NVARCHAR(500) </td>
+<td align="center"> YES  </td>
+<td align="center"> 页面路径                                                            </td>
+</tr>
+<tr>
+<td align="center"> Mobile                     </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> NO   </td>
+<td align="center"> 手机                                                                </td>
+</tr>
+<tr>
+<td align="center"> UserNo                     </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> YES  </td>
+<td align="center"> 员工编号(相当于警号、员工工号)                                      </td>
+</tr>
+<tr>
+<td align="center"> SignName                   </td>
+<td align="center"> 文本100    </td>
+<td align="center"> NVARCHAR(100) </td>
+<td align="center"> YES  </td>
+<td align="center"> 用户个性化签名                                                      </td>
+</tr>
+<tr>
+<td align="center"> Sex                        </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> YES  </td>
+<td align="center"> 性别，F-女　M-男:空字符（""）表示不确定                             </td>
+</tr>
+<tr>
+<td align="center"> Birthday                   </td>
+<td align="center"> 日期       </td>
+<td align="center"> DATE          </td>
+<td align="center"> YES  </td>
+<td align="center"> 出生年月                                                            </td>
+</tr>
+<tr>
+<td align="center"> UserClassLevelID           </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)      </td>
+<td align="center"> YES  </td>
+<td align="center"> 用户等级ID                                                          </td>
+</tr>
+<tr>
+<td align="center"> UserClassLevelNo           </td>
+<td align="center"> 整型       </td>
+<td align="center"> INTEGER       </td>
+<td align="center"> NO   </td>
+<td align="center"> 用户当前的级别编号                                                  </td>
+</tr>
+<tr>
+<td align="center"> UserClassLevelName         </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> NO   </td>
+<td align="center"> 姓名名称                                                            </td>
+</tr>
+<tr>
+<td align="center"> UserClassLevelImageUrl     </td>
+<td align="center"> 页面路径   </td>
+<td align="center"> NVARCHAR(500) </td>
+<td align="center"> YES  </td>
+<td align="center"> 用户等级对应的图片地址                                              </td>
+</tr>
+<tr>
+<td align="center"> UserAppFeatureGroupID      </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> NO   </td>
+<td align="center"> 菜单组ID                                                            </td>
+</tr>
+<tr>
+<td align="center"> PersonalSign               </td>
+<td align="center"> 简介备注   </td>
+<td align="center"> NVARCHAR(400) </td>
+<td align="center"> YES  </td>
+<td align="center"> 个人介绍                                                            </td>
+</tr>
+<tr>
+<td align="center"> CurrentPositionID          </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)      </td>
+<td align="center"> YES  </td>
+<td align="center"> 当前职位ID                                                          </td>
+</tr>
+<tr>
+<td align="center"> IsRecommend                </td>
+<td align="center"> 整型       </td>
+<td align="center"> INTEGER       </td>
+<td align="center"> NO   </td>
+<td align="center"> 数量                                                                </td>
+</tr>
+<tr>
+<td align="center"> CurrentPositionName        </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> NO   </td>
+<td align="center"> 当前职位名称                                                        </td>
+</tr>
+<tr>
+<td align="center"> DepartmentID               </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)      </td>
+<td align="center"> YES  </td>
+<td align="center"> 前用户所有部门的ID(主要部门，非兼职部门）                           </td>
+</tr>
+<tr>
+<td align="center"> DepartmentName             </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> YES  </td>
+<td align="center"> 所在部门的名称（非兼职部门)                                         </td>
+</tr>
+<tr>
+<td align="center"> Status                     </td>
+<td align="center"> 枚举型     </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> NO   </td>
+<td align="center"> 用户状态：用于标识当前用户的状态，0表示禁用                         </td>
+</tr>
+<tr>
+<td align="center"> JobName                    </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> YES  </td>
+<td align="center"> 职务名称                                                            </td>
+</tr>
+<tr>
+<td align="center"> BelongDepartmentID         </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)      </td>
+<td align="center"> YES  </td>
+<td align="center"> 所属一级部门ID                                                      </td>
+</tr>
+<tr>
+<td align="center"> BelongDepartmentName       </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> YES  </td>
+<td align="center"> 所属一级部门名称                                                    </td>
+</tr>
+<tr>
+<td align="center"> ThirdSystemUserNo          </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> YES  </td>
+<td align="center"> 第三方系统用户账号                                                  </td>
+</tr>
+<tr>
+<td align="center"> ThirdSystemSyncDate        </td>
+<td align="center"> 创建日期   </td>
+<td align="center"> DATE          </td>
+<td align="center"> YES  </td>
+<td align="center"> 第三方同步时间                                                      </td>
+</tr>
+<tr>
+<td align="center"> ThirdSystemType            </td>
+<td align="center"> 枚举型     </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> YES  </td>
+<td align="center"> ThirdSystemType,第三方系统类型:AD AD;                               </td>
+</tr>
+<tr>
+<td align="center"> MsgSubscribeType           </td>
+<td align="center"> 枚举型     </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> YES  </td>
+<td align="center"> 消息订阅提醒方式，由枚举UserMsgSubscribeType确定                    </td>
+</tr>
+<tr>
+<td align="center"> IsNew                      </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT           </td>
+<td align="center"> NO   </td>
+<td align="center"> 是否新员工                                                          </td>
+</tr>
+<tr>
+<td align="center"> ViewUrl                    </td>
+<td align="center"> 页面路径   </td>
+<td align="center"> NVARCHAR(500) </td>
+<td align="center"> YES  </td>
+<td align="center"> 用户明细页面                                                        </td>
+</tr>
+<tr>
+<td align="center"> UserIdentityType           </td>
+<td align="center"> 整型       </td>
+<td align="center"> INTEGER       </td>
+<td align="center"> NO   </td>
+<td align="center"> 用户身份类型（1：老师；0：普通身份）默认普通身份                    </td>
+</tr>
+<tr>
+<td align="center"> CreateUserID               </td>
+<td align="center"> 创建人ID   </td>
+<td align="center"> CHAR(36)      </td>
+<td align="center"> YES  </td>
+<td align="center"> 创建人ID                                                            </td>
+</tr>
+<tr>
+<td align="center"> CreateUserName             </td>
+<td align="center"> 创建人名称 </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> YES  </td>
+<td align="center"> 创建人名称                                                          </td>
+</tr>
+<tr>
+<td align="center"> CreateDate                 </td>
+<td align="center"> 创建日期   </td>
+<td align="center"> DATE          </td>
+<td align="center"> YES  </td>
+<td align="center"> 创建日期                                                            </td>
+</tr>
+<tr>
+<td align="center"> UpdateUserID               </td>
+<td align="center"> 更新人ID   </td>
+<td align="center"> CHAR(36)      </td>
+<td align="center"> YES  </td>
+<td align="center"> 更新人ID                                                            </td>
+</tr>
+<tr>
+<td align="center"> UpdateUserName             </td>
+<td align="center"> 更新人姓名 </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> YES  </td>
+<td align="center"> 更新人姓名                                                          </td>
+</tr>
+<tr>
+<td align="center"> UpdateDate                 </td>
+<td align="center"> 更新日期   </td>
+<td align="center"> DATE          </td>
+<td align="center"> YES  </td>
+<td align="center"> 更新日期                                                            </td>
+</tr>
+<tr>
+<td align="center"> LastLoginTime              </td>
+<td align="center"> 更新日期   </td>
+<td align="center"> DATE          </td>
+<td align="center"> YES  </td>
+<td align="center"> 最后登录时间                                                        </td>
+</tr>
+<tr>
+<td align="center"> IsAdmin                    </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT           </td>
+<td align="center"> NO   </td>
+<td align="center"> 是否管理员                                                          </td>
+</tr>
+<tr>
+<td align="center"> IsEmailValidated           </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT           </td>
+<td align="center"> NO   </td>
+<td align="center"> 是否邮箱验证                                                        </td>
+</tr>
+<tr>
+<td align="center"> IsMobileValidated          </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT           </td>
+<td align="center"> NO   </td>
+<td align="center"> 是否手机验证                                                        </td>
+</tr>
+<tr>
+<td align="center"> IsAutonymValidated         </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT           </td>
+<td align="center"> NO   </td>
+<td align="center"> 是否实名验证                                                        </td>
+</tr>
+<tr>
+<td align="center"> LastLoginDate              </td>
+<td align="center"> 日期       </td>
+<td align="center"> DATE          </td>
+<td align="center"> YES  </td>
+<td align="center"> 最后登录日期                                                        </td>
+</tr>
+<tr>
+<td align="center"> MobileLastLoginDate        </td>
+<td align="center"> 日期       </td>
+<td align="center"> DATE          </td>
+<td align="center"> YES  </td>
+<td align="center"> 最后移动端登录日期                                                  </td>
+</tr>
+<tr>
+<td align="center"> UserType                   </td>
+<td align="center"> 枚举型     </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> NO   </td>
+<td align="center"> 用户类型                                                            </td>
+</tr>
+<tr>
+<td align="center"> LoweredEmail               </td>
+<td align="center"> 文本1000   </td>
+<td align="center"> NVARCHAR(256) </td>
+<td align="center"> NO   </td>
+<td align="center"> 小写Email                                                           </td>
+</tr>
+<tr>
+<td align="center"> ApproveStatus              </td>
+<td align="center"> 整型       </td>
+<td align="center"> INTEGER       </td>
+<td align="center"> NO   </td>
+<td align="center"> 用户是否已认证(为0时用户无法登录)0-未审核，1-已经通过,-1-审核不通过 </td>
+</tr>
+<tr>
+<td align="center"> IsLockedOut                </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT           </td>
+<td align="center"> NO   </td>
+<td align="center"> 用户是否已锁定（可配置密码重试次数，超过则自动锁定该用户）          </td>
+</tr>
+<tr>
+<td align="center"> IsEnabled                  </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT           </td>
+<td align="center"> NO   </td>
+<td align="center"> 是否禁用/启用                                                       </td>
+</tr>
+<tr>
+<td align="center"> IsRegisterUser             </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT           </td>
+<td align="center"> NO   </td>
+<td align="center"> 是否注册用户                                                        </td>
+</tr>
+<tr>
+<td align="center"> OrgCode                    </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> NO   </td>
+<td align="center"> 机构编号                                                            </td>
+</tr>
+<tr>
+<td align="center"> FailedPwdAttemptCount      </td>
+<td align="center"> 整型       </td>
+<td align="center"> INTEGER       </td>
+<td align="center"> NO   </td>
+<td align="center"> 密码重试次数                                                        </td>
+</tr>
+<tr>
+<td align="center"> EncryptionType             </td>
+<td align="center"> 枚举型     </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> NO   </td>
+<td align="center"> 密码加密方式                                                        </td>
+</tr>
+<tr>
+<td align="center"> ExpiredDate                </td>
+<td align="center"> 日期       </td>
+<td align="center"> DATE          </td>
+<td align="center"> YES  </td>
+<td align="center"> 账户有效期                                                          </td>
+</tr>
+<tr>
+<td align="center"> EnableText                 </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> NO   </td>
+<td align="center"> 禁用/启用加密字符串                                                 </td>
+</tr>
+<tr>
+<td align="center"> Password                   </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(128) </td>
+<td align="center"> NO   </td>
+<td align="center"> 加密或未加密的密码                                                  </td>
+</tr>
+<tr>
+<td align="center"> CreateSourceType           </td>
+<td align="center"> 枚举型     </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> NO   </td>
+<td align="center"> 创建用户类型                                                        </td>
+</tr>
+<tr>
+<td align="center"> LowerUserName              </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> NO   </td>
+<td align="center"> 小写账号名                                                          </td>
+</tr>
+<tr>
+<td align="center"> DeviceId                   </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(100) </td>
+<td align="center"> YES  </td>
+<td align="center"> 设备ID                                                              </td>
+</tr>
+<tr>
+<td align="center"> ClientKey                  </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> YES  </td>
+<td align="center"> 移动客户端的唯一标记，每次移动端生成新的覆盖                        </td>
+</tr>
+<tr>
+<td align="center"> Spare1                     </td>
+<td align="center"> 文本100    </td>
+<td align="center"> NVARCHAR(400) </td>
+<td align="center"> YES  </td>
+<td align="center"> 备用1                                                               </td>
+</tr>
+<tr>
+<td align="center"> Spare2                     </td>
+<td align="center"> 文本100    </td>
+<td align="center"> NVARCHAR(400) </td>
+<td align="center"> YES  </td>
+<td align="center"> 备用2                                                               </td>
+</tr>
+<tr>
+<td align="center"> Spare3                     </td>
+<td align="center"> 文本100    </td>
+<td align="center"> NVARCHAR(300) </td>
+<td align="center"> YES  </td>
+<td align="center"> 备用3                                                               </td>
+</tr>
+<tr>
+<td align="center"> Spare4                     </td>
+<td align="center"> 文本100    </td>
+<td align="center"> NVARCHAR(400) </td>
+<td align="center"> YES  </td>
+<td align="center"> 备用4                                                               </td>
+</tr>
+<tr>
+<td align="center"> Spare5                     </td>
+<td align="center"> 文本100    </td>
+<td align="center"> NVARCHAR(400) </td>
+<td align="center"> YES  </td>
+<td align="center"> 备用5                                                               </td>
+</tr>
+<tr>
+<td align="center"> Spare6                     </td>
+<td align="center"> 文本100    </td>
+<td align="center"> NVARCHAR(400) </td>
+<td align="center"> YES  </td>
+<td align="center"> 备用6                                                               </td>
+</tr>
+<tr>
+<td align="center"> Spare7                     </td>
+<td align="center"> 文本100    </td>
+<td align="center"> NVARCHAR(400) </td>
+<td align="center"> YES  </td>
+<td align="center"> 备用7                                                               </td>
+</tr>
+<tr>
+<td align="center"> Spare8                     </td>
+<td align="center"> 文本100    </td>
+<td align="center"> NVARCHAR(400) </td>
+<td align="center"> YES  </td>
+<td align="center"> 备用8                                                               </td>
+</tr>
+<tr>
+<td align="center"> Spare9                     </td>
+<td align="center"> 文本100    </td>
+<td align="center"> NVARCHAR(400) </td>
+<td align="center"> YES  </td>
+<td align="center"> 备用9                                                               </td>
+</tr>
+<tr>
+<td align="center"> Spare10                    </td>
+<td align="center"> 文本100    </td>
+<td align="center"> NVARCHAR(400) </td>
+<td align="center"> YES  </td>
+<td align="center"> 备用10                                                              </td>
+</tr>
+<tr>
+<td align="center"> LowerCnName                </td>
+<td align="center"> 文本100    </td>
+<td align="center"> NVARCHAR(100) </td>
+<td align="center"> YES  </td>
+<td align="center"> 小写的中文名称                                                      </td>
+</tr>
+</tbody>
+</table>
+
+
+<hr />
+
+<p>org</p>
+
+<table>
+<thead>
+<tr>
+<th align="center"> Attribute/LogicalRolename   </th>
+<th align="center"> Domain     </th>
+<th align="center"> Datatype            </th>
+<th align="center"> NULL </th>
+<th align="center"> Definition                                                                    </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"> ID(PK)                      </td>
+<td align="center"> 主键ID     </td>
+<td align="center"> CHAR(36)            </td>
+<td align="center"> NO   </td>
+<td align="center"> 主键ID                                                                        </td>
+</tr>
+<tr>
+<td align="center"> OrgCode                     </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> NO   </td>
+<td align="center"> 机构代码                                                                      </td>
+</tr>
+<tr>
+<td align="center"> OrgName                     </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> NO   </td>
+<td align="center"> 单位名称                                                                      </td>
+</tr>
+<tr>
+<td align="center"> OrgInternalNumber           </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 机构内部编号                                                                  </td>
+</tr>
+<tr>
+<td align="center"> ProvinceID                  </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)            </td>
+<td align="center"> YES  </td>
+<td align="center"> 所在省份，引用Core_BaseInfo.ID                                                </td>
+</tr>
+<tr>
+<td align="center"> ProvinceName                </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 姓名名称                                                                      </td>
+</tr>
+<tr>
+<td align="center"> CityID                      </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)            </td>
+<td align="center"> YES  </td>
+<td align="center"> 所在城市                                                                      </td>
+</tr>
+<tr>
+<td align="center"> CityName                    </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 姓名名称                                                                      </td>
+</tr>
+<tr>
+<td align="center"> Email                       </td>
+<td align="center"> 文本100    </td>
+<td align="center"> NVARCHAR(100)       </td>
+<td align="center"> YES  </td>
+<td align="center"> 电子邮箱                                                                      </td>
+</tr>
+<tr>
+<td align="center"> Address                     </td>
+<td align="center"> 文本100    </td>
+<td align="center"> NVARCHAR(100)       </td>
+<td align="center"> YES  </td>
+<td align="center"> 地址                                                                          </td>
+</tr>
+<tr>
+<td align="center"> EstablishmentDate           </td>
+<td align="center"> 日期       </td>
+<td align="center"> DATE                </td>
+<td align="center"> YES  </td>
+<td align="center"> 机构成立日期                                                                  </td>
+</tr>
+<tr>
+<td align="center"> LegalPerson                 </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 企业法人                                                                      </td>
+</tr>
+<tr>
+<td align="center"> LegalPersonTelephone        </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 编号                                                                          </td>
+</tr>
+<tr>
+<td align="center"> LegalNumber                 </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 法人代码                                                                      </td>
+</tr>
+<tr>
+<td align="center"> OrgNatureID                 </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)            </td>
+<td align="center"> YES  </td>
+<td align="center"> 机构性质，引用BaseInfo的机构性质列表                                          </td>
+</tr>
+<tr>
+<td align="center"> IsHasParent                 </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT                 </td>
+<td align="center"> NO   </td>
+<td align="center"> 是否有母公司                                                                  </td>
+</tr>
+<tr>
+<td align="center"> ManageDept                  </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 主管部门                                                                      </td>
+</tr>
+<tr>
+<td align="center"> ParentOrgName               </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 母公司名称                                                                    </td>
+</tr>
+<tr>
+<td align="center"> ParentOrgLegalNumber        </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 母公司法人代码                                                                </td>
+</tr>
+<tr>
+<td align="center"> RegisterAddress             </td>
+<td align="center"> 文本100    </td>
+<td align="center"> NVARCHAR(100)       </td>
+<td align="center"> YES  </td>
+<td align="center"> 法定注册地址                                                                  </td>
+</tr>
+<tr>
+<td align="center"> RegisterFunds               </td>
+<td align="center"> 整型       </td>
+<td align="center"> INTEGER             </td>
+<td align="center"> NO   </td>
+<td align="center"> 机构注册资金(万元)                                                            </td>
+</tr>
+<tr>
+<td align="center"> Postcode                    </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 机构邮编                                                                      </td>
+</tr>
+<tr>
+<td align="center"> IndustryID                  </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)            </td>
+<td align="center"> YES  </td>
+<td align="center"> 公司行业，基本资料中Core_BaseInfo.ID                                          </td>
+</tr>
+<tr>
+<td align="center"> Industry                    </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 姓名名称                                                                      </td>
+</tr>
+<tr>
+<td align="center"> EmployeeScaleID             </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)            </td>
+<td align="center"> YES  </td>
+<td align="center"> 企业员工规模，基本资料中Core_BaseInfo.ID                                      </td>
+</tr>
+<tr>
+<td align="center"> LogoURL                     </td>
+<td align="center"> 页面路径   </td>
+<td align="center"> NVARCHAR(500)       </td>
+<td align="center"> YES  </td>
+<td align="center"> 公司logo                                                                      </td>
+</tr>
+<tr>
+<td align="center"> OrgIntroduction             </td>
+<td align="center"> 富文本     </td>
+<td align="center"> NTEXT/LONG,NVARCHAR </td>
+<td align="center"> YES  </td>
+<td align="center"> 企业描述                                                                      </td>
+</tr>
+<tr>
+<td align="center"> ContactName                 </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 联系人                                                                        </td>
+</tr>
+<tr>
+<td align="center"> ContactPositionTitle        </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 联系人职称                                                                    </td>
+</tr>
+<tr>
+<td align="center"> ContactTelephone            </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 联系电话                                                                      </td>
+</tr>
+<tr>
+<td align="center"> ContactPhone                </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 联系人手机                                                                    </td>
+</tr>
+<tr>
+<td align="center"> ContactEmail                </td>
+<td align="center"> 页面路径   </td>
+<td align="center"> NVARCHAR(500)       </td>
+<td align="center"> YES  </td>
+<td align="center"> 联系人邮箱                                                                    </td>
+</tr>
+<tr>
+<td align="center"> ContactQQ                   </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 联系人QQ                                                                      </td>
+</tr>
+<tr>
+<td align="center"> ContactMSN                  </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 联系人MSN                                                                     </td>
+</tr>
+<tr>
+<td align="center"> ContactFax                  </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 编号                                                                          </td>
+</tr>
+<tr>
+<td align="center"> OrgHomepageUrl              </td>
+<td align="center"> 页面路径   </td>
+<td align="center"> NVARCHAR(500)       </td>
+<td align="center"> YES  </td>
+<td align="center"> 公司主页                                                                      </td>
+</tr>
+<tr>
+<td align="center"> IntegrationCertificateCode  </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 系统集成认证号                                                                </td>
+</tr>
+<tr>
+<td align="center"> IntegrationCertificationOrg </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 系统集成认证机关                                                              </td>
+</tr>
+<tr>
+<td align="center"> CmmiCertificateCode         </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> CMMI认证号                                                                    </td>
+</tr>
+<tr>
+<td align="center"> CmmiCertificationOrg        </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> CMMI认证机关                                                                  </td>
+</tr>
+<tr>
+<td align="center"> CmmiLevelID                 </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)            </td>
+<td align="center"> YES  </td>
+<td align="center"> CMMI级别                                                                      </td>
+</tr>
+<tr>
+<td align="center"> ISOCertificateCode          </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> ISO认证号                                                                     </td>
+</tr>
+<tr>
+<td align="center"> ISOCertificationOrg         </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> ISO认证机关                                                                   </td>
+</tr>
+<tr>
+<td align="center"> CustomHomePageContents      </td>
+<td align="center"> 富文本     </td>
+<td align="center"> NTEXT/LONG NVARCHAR </td>
+<td align="center"> YES  </td>
+<td align="center"> 自定义主页内容                                                                </td>
+</tr>
+<tr>
+<td align="center"> IsDeleted                   </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT                 </td>
+<td align="center"> NO   </td>
+<td align="center"> 布尔型                                                                        </td>
+</tr>
+<tr>
+<td align="center"> IsEnableElearning           </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT                 </td>
+<td align="center"> NO   </td>
+<td align="center"> 是否启用E-learning在线学习功能                                                </td>
+</tr>
+<tr>
+<td align="center"> SecurityCode                </td>
+<td align="center"> 文本100    </td>
+<td align="center"> NVARCHAR(100)       </td>
+<td align="center"> YES  </td>
+<td align="center"> 机构授权码                                                                    </td>
+</tr>
+<tr>
+<td align="center"> Status                      </td>
+<td align="center"> 枚举型     </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> NO   </td>
+<td align="center"> 企业状态，使用已定义的枚举变量值                                              </td>
+</tr>
+<tr>
+<td align="center"> ResponsiblePerson           </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 负责人                                                                        </td>
+</tr>
+<tr>
+<td align="center"> ResponsiblePersonTel        </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 负责人电话                                                                    </td>
+</tr>
+<tr>
+<td align="center"> IsAdvertise                 </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT                 </td>
+<td align="center"> NO   </td>
+<td align="center"> 是否发布广告                                                                  </td>
+</tr>
+<tr>
+<td align="center"> OrgType                     </td>
+<td align="center"> 枚举型     </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> NO   </td>
+<td align="center"> 机构类型：TrainingOrg培训、University高校、Enterprise企业、SoftwarePark软件园 </td>
+</tr>
+<tr>
+<td align="center"> RegisterUserID              </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)            </td>
+<td align="center"> YES  </td>
+<td align="center"> 注册用户的ID                                                                  </td>
+</tr>
+<tr>
+<td align="center"> IsRootOrg                   </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT                 </td>
+<td align="center"> NO   </td>
+<td align="center"> 是否是根结构机构等级ID,来源于基本资料                                         </td>
+</tr>
+<tr>
+<td align="center"> OrgSystemLevel              </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 机构等级名称                                                                  </td>
+</tr>
+<tr>
+<td align="center"> CheckComment                </td>
+<td align="center"> 简介备注   </td>
+<td align="center"> NVARCHAR(800)       </td>
+<td align="center"> YES  </td>
+<td align="center"> 审核意见                                                                      </td>
+</tr>
+<tr>
+<td align="center"> CheckUserID                 </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)            </td>
+<td align="center"> YES  </td>
+<td align="center"> 审核人ID                                                                      </td>
+</tr>
+<tr>
+<td align="center"> CheckUserCName              </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 审核人姓名                                                                    </td>
+</tr>
+<tr>
+<td align="center"> IsAutoLogin                 </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT                 </td>
+<td align="center"> NO   </td>
+<td align="center"> 是否自动登录                                                                  </td>
+</tr>
+<tr>
+<td align="center"> IsRememberPassword          </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT                 </td>
+<td align="center"> NO   </td>
+<td align="center"> 是否记住密码                                                                  </td>
+</tr>
+<tr>
+<td align="center"> IsSelfDefineLabel           </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT                 </td>
+<td align="center"> NO   </td>
+<td align="center"> 是否自定义页头页尾                                                            </td>
+</tr>
+<tr>
+<td align="center"> HeaderLabelEName            </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 页头标签编码                                                                  </td>
+</tr>
+<tr>
+<td align="center"> FooterLabelEname            </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 页尾标签编码                                                                  </td>
+</tr>
+<tr>
+<td align="center"> LoginMasterPage             </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 登录母板页编码                                                                </td>
+</tr>
+<tr>
+<td align="center"> RegisterUserCName           </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 注册用户中文名                                                                </td>
+</tr>
+<tr>
+<td align="center"> IsRegisterOrg               </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT                 </td>
+<td align="center"> NO   </td>
+<td align="center"> 是否是注册机构                                                                </td>
+</tr>
+<tr>
+<td align="center"> EmployeeScale               </td>
+<td align="center"> 富文本     </td>
+<td align="center"> NTEXT/LONG NVARCHAR </td>
+<td align="center"> YES  </td>
+<td align="center"> 员工规模的中文描述                                                            </td>
+</tr>
+<tr>
+<td align="center"> RecommendLevel              </td>
+<td align="center"> 整型       </td>
+<td align="center"> INTEGER             </td>
+<td align="center"> NO   </td>
+<td align="center"> 推荐级别                                                                      </td>
+</tr>
+<tr>
+<td align="center"> IsFamousOrg                 </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT                 </td>
+<td align="center"> NO   </td>
+<td align="center"> 是否名企                                                                      </td>
+</tr>
+<tr>
+<td align="center"> ViewCount                   </td>
+<td align="center"> 整型       </td>
+<td align="center"> INTEGER             </td>
+<td align="center"> NO   </td>
+<td align="center"> 机构被访问次数                                                                </td>
+</tr>
+<tr>
+<td align="center"> IsAllowViewSurveyResult     </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT                 </td>
+<td align="center"> NO   </td>
+<td align="center"> 是否允许查看调查问卷结果                                                      </td>
+</tr>
+<tr>
+<td align="center"> OrgIntroductionSummary      </td>
+<td align="center"> 文本2000   </td>
+<td align="center"> NVARCHAR(2000)      </td>
+<td align="center"> YES  </td>
+<td align="center"> 机构文本介绍                                                                  </td>
+</tr>
+<tr>
+<td align="center"> ViewedResumeCount           </td>
+<td align="center"> 整型       </td>
+<td align="center"> INTEGER             </td>
+<td align="center"> NO   </td>
+<td align="center"> 数量                                                                          </td>
+</tr>
+<tr>
+<td align="center"> ViewTalentLevel             </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)            </td>
+<td align="center"> YES  </td>
+<td align="center"> 可查询人才级别                                                                </td>
+</tr>
+<tr>
+<td align="center"> AvailableResumeCount        </td>
+<td align="center"> 整型       </td>
+<td align="center"> INTEGER             </td>
+<td align="center"> NO   </td>
+<td align="center"> 可以查询的简历人数                                                            </td>
+</tr>
+<tr>
+<td align="center"> ParentOrgID                 </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)            </td>
+<td align="center"> YES  </td>
+<td align="center"> 软件园ID,当前机构所属机构ID                                                   </td>
+</tr>
+<tr>
+<td align="center"> ApplicationType             </td>
+<td align="center"> 枚举型     </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> NO   </td>
+<td align="center"> 应用程序类型                                                                  </td>
+</tr>
+<tr>
+<td align="center"> FeeStartDate                </td>
+<td align="center"> 日期       </td>
+<td align="center"> DATE                </td>
+<td align="center"> YES  </td>
+<td align="center"> 合同开始日期(费用开始时间)                                                    </td>
+</tr>
+<tr>
+<td align="center"> FeeEndDate                  </td>
+<td align="center"> 日期       </td>
+<td align="center"> DATE                </td>
+<td align="center"> YES  </td>
+<td align="center"> 合同结束日期(费用结束时间)                                                    </td>
+</tr>
+<tr>
+<td align="center"> LastVisitDate               </td>
+<td align="center"> 日期       </td>
+<td align="center"> DATE                </td>
+<td align="center"> YES  </td>
+<td align="center"> 最近访问日期时间                                                              </td>
+</tr>
+<tr>
+<td align="center"> LastCommunicateDate         </td>
+<td align="center"> 日期       </td>
+<td align="center"> DATE                </td>
+<td align="center"> YES  </td>
+<td align="center"> 最近沟通时间                                                                  </td>
+</tr>
+<tr>
+<td align="center"> NextCommunicateDate         </td>
+<td align="center"> 日期       </td>
+<td align="center"> DATE                </td>
+<td align="center"> YES  </td>
+<td align="center"> 下次沟通时间                                                                  </td>
+</tr>
+<tr>
+<td align="center"> SatisfactionRate            </td>
+<td align="center"> 整型       </td>
+<td align="center"> INTEGER             </td>
+<td align="center"> YES  </td>
+<td align="center"> 满意度                                                                        </td>
+</tr>
+<tr>
+<td align="center"> IntendRate                  </td>
+<td align="center"> 整型       </td>
+<td align="center"> INTEGER             </td>
+<td align="center"> YES  </td>
+<td align="center"> 意向度                                                                        </td>
+</tr>
+<tr>
+<td align="center"> ExpireDate                  </td>
+<td align="center"> 日期       </td>
+<td align="center"> DATE                </td>
+<td align="center"> YES  </td>
+<td align="center"> 到期时间                                                                      </td>
+</tr>
+<tr>
+<td align="center"> AppFeareGroupID             </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)            </td>
+<td align="center"> YES  </td>
+<td align="center"> 导航组ID                                                                      </td>
+</tr>
+<tr>
+<td align="center"> AppFeareGroupName           </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 导航组名称                                                                    </td>
+</tr>
+<tr>
+<td align="center"> AppFeatureGroupType         </td>
+<td align="center"> 枚举型     </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 导航组类型，FeatureGroupType Free:免费, Base:基础, Standard:标准              </td>
+</tr>
+<tr>
+<td align="center"> YearFee金额/价格            </td>
+<td align="center">            </td>
+<td align="center"> INTEGER             </td>
+<td align="center"> YES  </td>
+<td align="center"> 年费                                                                          </td>
+</tr>
+<tr>
+<td align="center"> PlanUserCount               </td>
+<td align="center"> 整型       </td>
+<td align="center"> INTEGER             </td>
+<td align="center"> YES  </td>
+<td align="center"> 计划使用数量                                                                  </td>
+</tr>
+<tr>
+<td align="center"> ApplyDate                   </td>
+<td align="center"> 日期       </td>
+<td align="center"> DATE                </td>
+<td align="center"> YES  </td>
+<td align="center"> 申请时间                                                                      </td>
+</tr>
+<tr>
+<td align="center"> IsApprove                   </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT                 </td>
+<td align="center"> YES  </td>
+<td align="center"> 是否认证                                                                      </td>
+</tr>
+<tr>
+<td align="center"> IsOfficialCustomer          </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT                 </td>
+<td align="center"> YES  </td>
+<td align="center"> 是否正式客户                                                                  </td>
+</tr>
+<tr>
+<td align="center"> BeOfficialCustomerDate      </td>
+<td align="center"> 日期       </td>
+<td align="center"> DATE                </td>
+<td align="center"> YES  </td>
+<td align="center"> 转为正式客户时间                                                              </td>
+</tr>
+<tr>
+<td align="center"> IsTemplateOrg               </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT                 </td>
+<td align="center"> YES  </td>
+<td align="center"> 是否模板机构                                                                  </td>
+</tr>
+<tr>
+<td align="center"> IndustryTemplateID          </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)            </td>
+<td align="center"> YES  </td>
+<td align="center"> 行业模板ID                                                                    </td>
+</tr>
+<tr>
+<td align="center"> IndustryTemplateName        </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 行业模板名称                                                                  </td>
+</tr>
+<tr>
+<td align="center"> CooperationUpdateDate       </td>
+<td align="center"> 日期       </td>
+<td align="center"> DATE                </td>
+<td align="center"> YES  </td>
+<td align="center"> 合同更新时间                                                                  </td>
+</tr>
+<tr>
+<td align="center"> MaxUserCount                </td>
+<td align="center"> 整型       </td>
+<td align="center"> INTEGER             </td>
+<td align="center"> YES  </td>
+<td align="center"> 系统用户最大数量                                                              </td>
+</tr>
+<tr>
+<td align="center"> CurrentUserCount            </td>
+<td align="center"> 整型       </td>
+<td align="center"> INTEGER             </td>
+<td align="center"> YES  </td>
+<td align="center"> 系统用户当前数量                                                              </td>
+</tr>
+<tr>
+<td align="center"> IsReserveOrg                </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT                 </td>
+<td align="center"> YES  </td>
+<td align="center"> 是否预留机构                                                                  </td>
+</tr>
+<tr>
+<td align="center"> BusinessLicenseUrl          </td>
+<td align="center"> 页面路径   </td>
+<td align="center"> NVARCHAR(500)       </td>
+<td align="center"> YES  </td>
+<td align="center"> 代理商营业执照路径                                                            </td>
+</tr>
+<tr>
+<td align="center"> AgentName                   </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 代理商名称                                                                    </td>
+</tr>
+<tr>
+<td align="center"> CreateUserID                </td>
+<td align="center"> 创建人ID   </td>
+<td align="center"> CHAR(36)            </td>
+<td align="center"> YES  </td>
+<td align="center"> 创建人ID                                                                      </td>
+</tr>
+<tr>
+<td align="center"> CreateUserName              </td>
+<td align="center"> 创建人名称 </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 创建人名称                                                                    </td>
+</tr>
+<tr>
+<td align="center"> CreateDate                  </td>
+<td align="center"> 创建日期   </td>
+<td align="center"> DATE                </td>
+<td align="center"> YES  </td>
+<td align="center"> 创建日期                                                                      </td>
+</tr>
+<tr>
+<td align="center"> UpdateUserID                </td>
+<td align="center"> 更新人ID   </td>
+<td align="center"> CHAR(36)            </td>
+<td align="center"> YES  </td>
+<td align="center"> 更新人ID                                                                      </td>
+</tr>
+<tr>
+<td align="center"> UpdateUserName              </td>
+<td align="center"> 更新人姓名 </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 更新人姓名                                                                    </td>
+</tr>
+<tr>
+<td align="center"> UpdateDate                  </td>
+<td align="center"> 更新日期   </td>
+<td align="center"> DATE                </td>
+<td align="center"> YES  </td>
+<td align="center"> 更新日期                                                                      </td>
+</tr>
+<tr>
+<td align="center"> RegisterNoURL               </td>
+<td align="center">            </td>
+<td align="center"> NVARCHAR(500)       </td>
+<td align="center"> YES  </td>
+<td align="center"> 注册者工号照片URL                                                             </td>
+</tr>
+<tr>
+<td align="center"> RegisterCompanyURL          </td>
+<td align="center">            </td>
+<td align="center"> NVARCHAR(500)       </td>
+<td align="center"> YES  </td>
+<td align="center"> 注册者公司照片URL                                                             </td>
+</tr>
+<tr>
+<td align="center"> AuditStatus                 </td>
+<td align="center">            </td>
+<td align="center"> NUMERIC(1,0)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 审核注册者上传的照片的状态                                                    </td>
+</tr>
+</tbody>
+</table>
+
+
+<hr />
+
+<p>department</p>
+
+<table>
+<thead>
+<tr>
+<th align="center"> Attribute/Logical Rolename </th>
+<th align="center"> Domain     </th>
+<th align="center"> Datatype      </th>
+<th align="center"> NULL </th>
+<th align="center"> Definition                                                      </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"> ID(PK)                     </td>
+<td align="center"> 主键ID     </td>
+<td align="center"> CHAR(36)      </td>
+<td align="center"> NO   </td>
+<td align="center"> 主键ID                                                          </td>
+</tr>
+<tr>
+<td align="center"> OrgID                      </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)      </td>
+<td align="center"> YES  </td>
+<td align="center"> 组织单元所在的组织结构ID(或为行业模板ID)                        </td>
+</tr>
+<tr>
+<td align="center"> OUName                     </td>
+<td align="center"> 标题       </td>
+<td align="center"> NVARCHAR(100) </td>
+<td align="center"> NO   </td>
+<td align="center"> 组织单元名称                                                    </td>
+</tr>
+<tr>
+<td align="center"> OUCode                     </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> NO   </td>
+<td align="center"> 组织单元编号(内部给每个部门的编号)-不超过２０位                 </td>
+</tr>
+<tr>
+<td align="center"> ParentID                   </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)      </td>
+<td align="center"> YES  </td>
+<td align="center"> 父组织单元ID                                                    </td>
+</tr>
+<tr>
+<td align="center"> OURoutingNumber            </td>
+<td align="center"> 层级编号   </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> NO   </td>
+<td align="center"> 组织单元路径，如001.001.002                                     </td>
+</tr>
+<tr>
+<td align="center"> OUManagerID                </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)      </td>
+<td align="center"> YES  </td>
+<td align="center"> 部门主管人ID                                                    </td>
+</tr>
+<tr>
+<td align="center"> OUManagerName              </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> YES  </td>
+<td align="center"> 部门经理姓名                                                    </td>
+</tr>
+<tr>
+<td align="center"> LearningManagerID          </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)      </td>
+<td align="center"> YES  </td>
+<td align="center"> 学习主管ID                                                      </td>
+</tr>
+<tr>
+<td align="center"> LearningManagerName        </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> YES  </td>
+<td align="center"> 学习主管姓名                                                    </td>
+</tr>
+<tr>
+<td align="center"> OUType                     </td>
+<td align="center"> 枚举型     </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> NO   </td>
+<td align="center"> 枚举类型，请参照xxxx枚举                                        </td>
+</tr>
+<tr>
+<td align="center"> IsDeleted                  </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT           </td>
+<td align="center"> NO   </td>
+<td align="center"> 是否删除                                                        </td>
+</tr>
+<tr>
+<td align="center"> OrderIndex                 </td>
+<td align="center"> 整型       </td>
+<td align="center"> INTEGER       </td>
+<td align="center"> NO   </td>
+<td align="center"> 部门顺序                                                        </td>
+</tr>
+<tr>
+<td align="center"> Description                </td>
+<td align="center"> 简介备注   </td>
+<td align="center"> NVARCHAR(400) </td>
+<td align="center"> YES  </td>
+<td align="center"> 部门描述                                                        </td>
+</tr>
+<tr>
+<td align="center"> OUManagerAccount           </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> YES  </td>
+<td align="center"> 管理员登录帐户                                                  </td>
+</tr>
+<tr>
+<td align="center"> AllowMaxEmployeeCount      </td>
+<td align="center"> 整型       </td>
+<td align="center"> INTEGER       </td>
+<td align="center"> NO   </td>
+<td align="center"> 数量                                                            </td>
+</tr>
+<tr>
+<td align="center"> OUEmployeeCount            </td>
+<td align="center"> 整型       </td>
+<td align="center"> INTEGER       </td>
+<td align="center"> NO   </td>
+<td align="center"> 部门/客户/代理商员工人数                                        </td>
+</tr>
+<tr>
+<td align="center"> FullTimeEmployeeCount      </td>
+<td align="center"> 整型       </td>
+<td align="center"> INTEGER       </td>
+<td align="center"> NO   </td>
+<td align="center"> 全职员工数量                                                    </td>
+</tr>
+<tr>
+<td align="center"> UsingKnowledgPackageName   </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> YES  </td>
+<td align="center"> 使用学习包名称                                                  </td>
+</tr>
+<tr>
+<td align="center"> UsingKnowledgPackageID     </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)      </td>
+<td align="center"> YES  </td>
+<td align="center"> 使用学习包ID                                                    </td>
+</tr>
+<tr>
+<td align="center"> OUUserRoleID               </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)      </td>
+<td align="center"> YES  </td>
+<td align="center"> 当前部门员工的默认角色，主要用于客户/代理商所创建用户的角色指定 </td>
+</tr>
+<tr>
+<td align="center"> CurrentSubsidiaryID        </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)      </td>
+<td align="center"> YES  </td>
+<td align="center"> 所属分支机构或子公司ID,如果组织结构为支机构或子公司时值为自身ID </td>
+</tr>
+<tr>
+<td align="center"> ThirdSystemID              </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> YES  </td>
+<td align="center"> 第三方系统ID                                                    </td>
+</tr>
+<tr>
+<td align="center"> OrderTacticsID             </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)      </td>
+<td align="center"> YES  </td>
+<td align="center"> 排名策略ID                                                      </td>
+</tr>
+<tr>
+<td align="center"> LowerOUCode                </td>
+<td align="center"> 机构编号   </td>
+<td align="center"> CHAR(36)      </td>
+<td align="center"> NO   </td>
+<td align="center"> 小写的编号                                                      </td>
+</tr>
+<tr>
+<td align="center"> LowerOuName                </td>
+<td align="center"> 文本100    </td>
+<td align="center"> NVARCHAR(100) </td>
+<td align="center"> YES  </td>
+<td align="center"> 小写的部门名称                                                  </td>
+</tr>
+<tr>
+<td align="center"> CreateUserID               </td>
+<td align="center"> 创建人ID   </td>
+<td align="center"> CHAR(36)      </td>
+<td align="center"> YES  </td>
+<td align="center"> 创建人员ID                                                      </td>
+</tr>
+<tr>
+<td align="center"> CreateUserName             </td>
+<td align="center"> 创建人名称 </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> YES  </td>
+<td align="center"> 创建人员姓名                                                    </td>
+</tr>
+<tr>
+<td align="center"> CreateDate                 </td>
+<td align="center"> 创建日期   </td>
+<td align="center"> DATE          </td>
+<td align="center"> YES  </td>
+<td align="center"> 创建时间                                                        </td>
+</tr>
+<tr>
+<td align="center"> UpdateUserID               </td>
+<td align="center"> 更新人ID   </td>
+<td align="center"> CHAR(36)      </td>
+<td align="center"> YES  </td>
+<td align="center"> 最后更新人员ID                                                  </td>
+</tr>
+<tr>
+<td align="center"> UpdateUserName             </td>
+<td align="center"> 更新人姓名 </td>
+<td align="center"> NVARCHAR(50)  </td>
+<td align="center"> YES  </td>
+<td align="center"> 最后更新人员姓名                                                </td>
+</tr>
+<tr>
+<td align="center"> UpdateDate                 </td>
+<td align="center"> 更新日期   </td>
+<td align="center"> DATE          </td>
+<td align="center"> YES  </td>
+<td align="center"> 最后更新时间                                                    </td>
+</tr>
+</tbody>
+</table>
+
+
+<hr />
+
+<p>org_tree</p>
+
+<table>
+<thead>
+<tr>
+<th align="center"> 字段        </th>
+<th align="center"> 类型   </th>
+<th align="center"> 意义                                </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"> node_id     </td>
+<td align="center"> 字符串 </td>
+<td align="center"> 节点的ID                            </td>
+</tr>
+<tr>
+<td align="center"> node_type   </td>
+<td align="center"> Enum   </td>
+<td align="center"> 节点类型:部门，子公司，项目组，员工 </td>
+</tr>
+<tr>
+<td align="center"> parent_id   </td>
+<td align="center"> 字符串 </td>
+<td align="center"> 父亲节点的类型                      </td>
+</tr>
+<tr>
+<td align="center"> parent_type </td>
+<td align="center"> Enum   </td>
+<td align="center"> 节点类型:子公司，项目组，部门       </td>
+</tr>
+</tbody>
+</table>
+
+
+<hr />
+
+<p>postition</p>
+
+<table>
+<thead>
+<tr>
+<th align="center"> Attribute/LogicalRolename </th>
+<th align="center"> Domain     </th>
+<th align="center"> Datatype            </th>
+<th align="center"> NULL </th>
+<th align="center"> Definition                                        </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"> ID(PK)                    </td>
+<td align="center"> 主键ID     </td>
+<td align="center"> CHAR(36)            </td>
+<td align="center"> NO   </td>
+<td align="center"> 主键ID                                            </td>
+</tr>
+<tr>
+<td align="center"> OrgID                     </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)            </td>
+<td align="center"> NO   </td>
+<td align="center"> 机构ID                                            </td>
+</tr>
+<tr>
+<td align="center"> PositionNo                </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> NO   </td>
+<td align="center"> 岗位编号                                          </td>
+</tr>
+<tr>
+<td align="center"> PositionName              </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> NO   </td>
+<td align="center"> 岗位名称                                          </td>
+</tr>
+<tr>
+<td align="center"> ParentID                  </td>
+<td align="center"> 外键ID     </td>
+<td align="center"> CHAR(36)            </td>
+<td align="center"> YES  </td>
+<td align="center"> 父节点ID                                          </td>
+</tr>
+<tr>
+<td align="center"> InfoType                  </td>
+<td align="center"> 枚举型     </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> NO   </td>
+<td align="center"> 岗位和岗位目录区分的标示                          </td>
+</tr>
+<tr>
+<td align="center"> SuggestionSalary          </td>
+<td align="center"> 整型       </td>
+<td align="center"> INTEGER             </td>
+<td align="center"> NO   </td>
+<td align="center"> 建议薪资                                          </td>
+</tr>
+<tr>
+<td align="center"> AlternativePosition       </td>
+<td align="center"> 名称       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 可替代岗位                                        </td>
+</tr>
+<tr>
+<td align="center"> IsCanDelete               </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT                 </td>
+<td align="center"> NO   </td>
+<td align="center"> 是否允许删除                                      </td>
+</tr>
+<tr>
+<td align="center"> IsDeleted                 </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT                 </td>
+<td align="center"> NO   </td>
+<td align="center"> 删除状态标志                                      </td>
+</tr>
+<tr>
+<td align="center"> IsParentNode              </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT                 </td>
+<td align="center"> NO   </td>
+<td align="center"> 是否父节点(0:否，1是)                             </td>
+</tr>
+<tr>
+<td align="center"> IsGlobalPosition          </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT                 </td>
+<td align="center"> NO   </td>
+<td align="center"> 是否是全局职位                                    </td>
+</tr>
+<tr>
+<td align="center"> IsImportantPosition       </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT                 </td>
+<td align="center"> NO   </td>
+<td align="center"> 是否重要岗位                                      </td>
+</tr>
+<tr>
+<td align="center"> IsSelfDefinition          </td>
+<td align="center"> 布尔型     </td>
+<td align="center"> BIT                 </td>
+<td align="center"> NO   </td>
+<td align="center"> 是否自定义岗位                                    </td>
+</tr>
+<tr>
+<td align="center"> TotalMustKnowledgeCount   </td>
+<td align="center"> 整型       </td>
+<td align="center"> INTEGER             </td>
+<td align="center"> NO   </td>
+<td align="center"> 岗位必修知识总数                                  </td>
+</tr>
+<tr>
+<td align="center"> TotalKnowledgeCount       </td>
+<td align="center"> 整型       </td>
+<td align="center"> INTEGER             </td>
+<td align="center"> NO   </td>
+<td align="center"> 岗位知识总数                                      </td>
+</tr>
+<tr>
+<td align="center"> PositionUserCount         </td>
+<td align="center"> 整型       </td>
+<td align="center"> INTEGER             </td>
+<td align="center"> NO   </td>
+<td align="center"> 岗位用户数量                                      </td>
+</tr>
+<tr>
+<td align="center"> PromotionPosition         </td>
+<td align="center"> 简介备注   </td>
+<td align="center"> NVARCHAR(400)       </td>
+<td align="center"> YES  </td>
+<td align="center"> 可晋升/发展岗位                                   </td>
+</tr>
+<tr>
+<td align="center"> PositionResponsibility    </td>
+<td align="center"> 富文本     </td>
+<td align="center"> NTEXT/LONG,NVARCHAR </td>
+<td align="center"> YES  </td>
+<td align="center"> 岗位职责                                          </td>
+</tr>
+<tr>
+<td align="center"> PositionTraining          </td>
+<td align="center"> 富文本     </td>
+<td align="center"> NTEXT/LONG,NVARCHAR </td>
+<td align="center"> YES  </td>
+<td align="center"> 岗位培养                                          </td>
+</tr>
+<tr>
+<td align="center"> JobRequire                </td>
+<td align="center"> 富文本     </td>
+<td align="center"> NTEXT/LONG,NVARCHAR </td>
+<td align="center"> YES  </td>
+<td align="center"> 任职资格                                          </td>
+</tr>
+<tr>
+<td align="center"> CareerDev                 </td>
+<td align="center"> 富文本     </td>
+<td align="center"> NTEXT/LONG,NVARCHAR </td>
+<td align="center"> YES  </td>
+<td align="center"> 职业发展                                          </td>
+</tr>
+<tr>
+<td align="center"> Description               </td>
+<td align="center"> 富文本     </td>
+<td align="center"> NTEXT/LONG,NVARCHAR </td>
+<td align="center"> YES  </td>
+<td align="center"> 描述                                              </td>
+</tr>
+<tr>
+<td align="center"> SelfDefinitionContext     </td>
+<td align="center"> 富文本     </td>
+<td align="center"> NTEXT/LONG,NVARCHAR </td>
+<td align="center"> YES  </td>
+<td align="center"> 自定义岗位内容                                    </td>
+</tr>
+<tr>
+<td align="center"> OrderIndex                </td>
+<td align="center"> 排序号     </td>
+<td align="center"> INTEGER             </td>
+<td align="center"> NO   </td>
+<td align="center"> 排序索引                                          </td>
+</tr>
+<tr>
+<td align="center"> RoutingNumber             </td>
+<td align="center"> 层级编号   </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> NO   </td>
+<td align="center"> 层级编号(例如：001,001.001,001.002,001.002.001等) </td>
+</tr>
+<tr>
+<td align="center"> ItemCount                 </td>
+<td align="center"> 整型       </td>
+<td align="center"> INTEGER             </td>
+<td align="center"> NO   </td>
+<td align="center"> 当前分类岗位数量                                  </td>
+</tr>
+<tr>
+<td align="center"> ItemAllCount              </td>
+<td align="center"> 整型       </td>
+<td align="center"> INTEGER             </td>
+<td align="center"> NO   </td>
+<td align="center"> 当前分类及子分类岗位数量                          </td>
+</tr>
+<tr>
+<td align="center"> LowerPositionNo           </td>
+<td align="center"> 编号       </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> NO   </td>
+<td align="center"> 岗位编号                                          </td>
+</tr>
+<tr>
+<td align="center"> LowerPositionName         </td>
+<td align="center"> 文本100    </td>
+<td align="center"> NVARCHAR(200)       </td>
+<td align="center"> YES  </td>
+<td align="center"> 小写的岗位名称                                    </td>
+</tr>
+<tr>
+<td align="center"> CreateUserID              </td>
+<td align="center"> 创建人ID   </td>
+<td align="center"> CHAR(36)            </td>
+<td align="center"> YES  </td>
+<td align="center"> 创建人ID                                          </td>
+</tr>
+<tr>
+<td align="center"> CreateUserName            </td>
+<td align="center"> 创建人名称 </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 创建人名称                                        </td>
+</tr>
+<tr>
+<td align="center"> CreateDate                </td>
+<td align="center"> 创建日期   </td>
+<td align="center"> DATE                </td>
+<td align="center"> YES  </td>
+<td align="center"> 创建日期                                          </td>
+</tr>
+<tr>
+<td align="center"> UpdateUserID              </td>
+<td align="center"> 更新人ID   </td>
+<td align="center"> CHAR(36)            </td>
+<td align="center"> YES  </td>
+<td align="center"> 更新人ID                                          </td>
+</tr>
+<tr>
+<td align="center"> UpdateUserName            </td>
+<td align="center"> 更新人姓名 </td>
+<td align="center"> NVARCHAR(50)        </td>
+<td align="center"> YES  </td>
+<td align="center"> 更新人姓名                                        </td>
+</tr>
+<tr>
+<td align="center"> UpdateDate                </td>
+<td align="center"> 更新日期   </td>
+<td align="center"> DATE                </td>
+<td align="center"> YES  </td>
+<td align="center"> 更新日期                                          </td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>一致性分析（待完成）</h2>
+
+<h2>过滤规则，满足服务侧数据过滤</h2>
+
+<h2>业务迁移（待完成）</h2>
+</body>
+</html>
